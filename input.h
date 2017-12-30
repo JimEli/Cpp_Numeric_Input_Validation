@@ -24,6 +24,7 @@
 
 #include <iostream>  
 #include <string>
+#include <cassert>
 
 using namespace std;
 
@@ -80,13 +81,14 @@ static inline bool validateNumber<double>(double& d, const string s) {
 // Validate string characters and attempt conversion.
 template<typename T>
 static bool isNumber(T& n, string& s) {
-	trim(s);
+	trim(s); // Remove trailing ws, leading ws is ignored by stox functions.
 
 	if (!s.empty()) {
 		string validChars(" +-1234567890");
 
 		if (!numeric_limits<T>::is_integer)
-			validChars += "."; // Add decimal point for floats.
+			// Add decimal point for floats.
+			validChars += ".";
 		if (s.find_first_not_of(validChars) != string::npos)
 			throw runtime_error("Invalid characters");
 
@@ -100,12 +102,16 @@ static bool isNumber(T& n, string& s) {
 // Input loop.
 template<typename T>
 bool getNumber(string prompt, T& n, T min, T max) throw() {
+	assert(!prompt.empty());
+	assert(min >= numeric_limits<T>::lowest() && max <= numeric_limits<T>::max());
+
 	if (is_same<T, int>::value || is_same<T, long>::value || is_same<T, double>::value) {
-		int attempts = MAX_INPUT_ATTEMPTS;
+		unsigned int attempts = MAX_INPUT_ATTEMPTS;
 
 		while (attempts--) {
-			string buffer;
+			string buffer; // Temporary holds input.
 
+			// Prompt and get input.
 			cout << prompt;
 			getline(cin, buffer, '\n');
 
