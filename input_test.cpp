@@ -1,4 +1,5 @@
-﻿#include "stdafx.h"
+// Unit tests for input.h routines.
+#include "stdafx.h"
 #include "input.h"
 
 #ifdef _DEBUG
@@ -42,6 +43,12 @@ int main() {
 	s = "1.";
 	assert(isNumber<double>(d, s));
 	assert(d == 1);
+	s = ".1";
+	assert(isNumber<double>(d, s));
+	assert(d == 0.1);
+	s = "0.1";
+	assert(isNumber<double>(d, s));
+	assert(d == 0.1);
 	s = "1.0";
 	assert(isNumber<double>(d, s));
 	assert(d == 1);
@@ -69,22 +76,25 @@ int main() {
 	s = "abc";
 	try {
 		isNumber<double>(d, s);
-	} catch (exception e) {
+	}
+	catch (exception e) {
 		assert(e.what() == string("Invalid characters"));
 	}
 
 	s = "123e";
 	try {
 		isNumber<double>(d, s);
-	} catch (exception e) {
+	}
+	catch (exception e) {
 		assert(e.what() == string("Invalid characters"));
 	}
 
 	s = "1 1";
 	try {
 		isNumber<double>(d, s);
-	} catch (exception e) {
-		assert(e.what() == string("Invalid characters after number"));
+	}
+	catch (exception e) {
+		assert(e.what() == string("Trailing characters"));
 	}
 
 	// Long 
@@ -166,7 +176,7 @@ int main() {
 		isNumber<long>(l, s);
 	}
 	catch (exception e) {
-		assert(e.what() == string("Invalid characters after number"));
+		assert(e.what() == string("Trailing characters"));
 	}
 
 	char c;
@@ -174,9 +184,9 @@ int main() {
 	assert(!isNumber<char>(c, s));
 /*
 	if (getNumber<double>("Enter a double: ", d, 0., 100.))
-		cout << "double value: " << d << endl;
+	cout << "double value: " << d << endl;
 	if (getNumber<long>("Enter a long: ", l, -100, 100))
-		cout << "long value: " << l << endl;
+	cout << "long value: " << l << endl;
 */
 }
 #endif
