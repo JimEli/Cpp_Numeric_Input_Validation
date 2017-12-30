@@ -31,7 +31,7 @@
 using namespace std;
 
 #define MAX_INPUT_ATTEMPTS 3  // Maximum input attempts.
-#define MAX_INPUT_SIZE     20 // Maximum characters allowed in input string.
+#define MAX_INPUT_SIZE     16 // Maximum characters allowed in input string.
 
 // Trim trailing ws from string.
 static void trim(string& s) {
@@ -41,6 +41,7 @@ static void trim(string& s) {
 		s.erase(p + 1);
 }
 
+// Individual type validations.
 template<typename T>
 static inline bool validateNumber(T& t, const string s) {
 	return false; // Fail for types other than int, long & double (see below).
@@ -52,7 +53,7 @@ static inline bool validateNumber<int>(int& i, const string s) {
 
 	i = stoi(s, &pos);
 	if (pos != s.length())
-		throw runtime_error("Invalid characters after number");
+		throw runtime_error("Trailing characters");
 
 	return true;
 }
@@ -63,7 +64,7 @@ static inline bool validateNumber<long>(long& l, const string s) {
 
 	l = stol(s, &pos);
 	if (pos != s.length())
-		throw runtime_error("Invalid characters after number");
+		throw runtime_error("Trailing characters");
 
 	return true;
 }
@@ -74,21 +75,21 @@ static inline bool validateNumber<double>(double& d, const string s) {
 
 	d = stod(s, &pos);
 	if (pos != s.length())
-		throw runtime_error("Invalid characters after number");
+		throw runtime_error("Trailing characters");
 
 	return true;
 }
 
+// Validate string characters and attempt conversion.
 template<typename T>
 static bool isNumber(T& n, string& s) {
-	string validChars(" +-1234567890");
-
 	trim(s);
 
 	if (!s.empty()) {
-		if (!numeric_limits<T>::is_integer)
-			validChars += ".";
+		string validChars(" +-1234567890");
 
+		if (!numeric_limits<T>::is_integer)
+			validChars += "."; // Add decimal point for floats.
 		if (s.find_first_not_of(validChars) != string::npos)
 			throw runtime_error("Invalid characters");
 
@@ -99,34 +100,36 @@ static bool isNumber(T& n, string& s) {
 	return false;
 }
 
+// Input loop.
 template<typename T>
-bool getNumber(string prompt, T& n, T min, T max) {
-	string buffer;
-	int attempts = MAX_INPUT_ATTEMPTS;
-
+bool getNumber(string prompt, T& n, T min, T max) throw() {
 	if (is_same<T, int>::value || is_same<T, long>::value || is_same<T, double>::value) {
+		int attempts = MAX_INPUT_ATTEMPTS;
 
 		while (attempts--) {
+			string buffer;
+
 			cout << prompt;
 			getline(cin, buffer, '\n');
 
-			// Limit buffer length to reasonable amount.
-			if (buffer.size() >= MAX_INPUT_SIZE) {
-				cout << "Too many characters input" << endl;
-				continue;
-			}
-
 			try {
+				// Limit buffer length to reasonable amount.
+				if (buffer.size() > MAX_INPUT_SIZE)
+					throw(length_error("Exceeded max_input_size"));
+
 				if (isNumber<T>(n, buffer)) {
 					// Check if value between min/max.
 					if (n >= min && n <= max)
 						return true;
 					else
-						throw out_of_range("Out of range");
+						throw out_of_range("Outside min/max");
 				}
 			}
 			catch (const out_of_range) {
 				cout << "Number outside range (" << min << " to " << max << ")" << endl;
+			}
+			catch (const length_error) {
+				cout << "Too many characters input" << endl;
 			}
 			catch (const exception) {
 				cout << "Invalid input: " << buffer << endl;
