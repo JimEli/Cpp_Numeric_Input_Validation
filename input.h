@@ -6,7 +6,7 @@
 *
 * Integer/float console input validation. Checks string input for valid
 * characters, and range. Will repeat input prompting for specified
-* number of attempts.
+* number of attempts. Can be expaned to additional types.
 *
 * Notes:
 *  (1) Requires C++ 11 or greater.
@@ -24,9 +24,6 @@
 
 #include <iostream>  
 #include <string>
-#include <algorithm>
-#include <stdexcept>
-#include <cassert>
 
 using namespace std;
 
