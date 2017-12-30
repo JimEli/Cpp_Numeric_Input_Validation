@@ -115,7 +115,7 @@ bool getNumber(string prompt, T& n, T min, T max) throw() {
 			try {
 				// Limit buffer length to reasonable amount.
 				if (buffer.size() > MAX_INPUT_SIZE)
-					throw(length_error("Exceeded max_input_size"));
+					throw length_error("Exceeded max_input_size");
 
 				if (isNumber<T>(n, buffer)) {
 					// Check if value between min/max.
