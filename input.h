@@ -10,7 +10,7 @@
 *
 * Notes:
 *  (1) Requires C++ 11 or greater.
-*  (2) Compiled with MS Visual Studio 2017 Community (v141), and/or 
+*  (2) Compiled with MS Visual Studio 2017 Community (v141), and/or
 *      Eclipse GCC 5.3.0.
 *  (2) Floating point input rejects scientific notation.
 *
@@ -22,8 +22,9 @@
 #ifndef NUMERIC_INPUT_VALIDATION_H
 #define NUMERIC_INPUT_VALIDATION_H
 
-#include <iostream>  
+#include <iostream>
 #include <string>
+#include <limits>
 #include <cassert>
 
 using namespace std;
@@ -41,12 +42,12 @@ static void trim(string& s) {
 
 // Individual type validations.
 template<typename T>
-static inline const bool validateNumber(T& t, const string s) {
+inline const bool validateNumber(T& t, const string s) {
 	return false; // Fail for types other than int, long & double (see below).
 }
 
 template<>
-static inline const bool validateNumber<int>(int& i, const string s) {
+inline const bool validateNumber<int>(int& i, const string s) {
 	string::size_type pos = 0;
 
 	i = stoi(s, &pos);
@@ -57,7 +58,7 @@ static inline const bool validateNumber<int>(int& i, const string s) {
 }
 
 template<>
-static inline const bool validateNumber<long>(long& l, const string s) {
+inline const bool validateNumber<long>(long& l, const string s) {
 	string::size_type pos = 0;
 
 	l = stol(s, &pos);
@@ -68,7 +69,7 @@ static inline const bool validateNumber<long>(long& l, const string s) {
 }
 
 template<>
-static inline const bool validateNumber<double>(double& d, const string s) {
+inline const bool validateNumber<double>(double& d, const string s) {
 	string::size_type pos = 0;
 
 	d = stod(s, &pos);
@@ -81,14 +82,15 @@ static inline const bool validateNumber<double>(double& d, const string s) {
 // Validate string characters and attempt conversion.
 template<typename T>
 static const bool isNumber(T& n, string& s) {
-	trim(s); // Remove trailing ws, leading ws is ignored by stox functions.
+	trim(s); // Remove trailing ws, leading ws is ignored by stoX functions.
 
 	if (!s.empty()) {
 		string validChars(" +-1234567890");
 
-		if (!numeric_limits<T>::is_integer)
+		if (!std::numeric_limits<T>::is_integer)
 			// Add decimal point for floats.
 			validChars += ".";
+
 		if (s.find_first_not_of(validChars) != string::npos)
 			throw runtime_error("Invalid characters");
 
@@ -110,12 +112,12 @@ const bool getNumber(const string prompt, T& n, const T min, const T max) throw(
 	while (attempts--) {
 		string buffer; // Temporary holds input.
 
-		// Prompt and get input.
+					   // Prompt and get input.
 		cout << prompt;
 		getline(cin, buffer, '\n');
 
 		try {
-			// Limit buffer length to reasonable amount.
+			// Limit buffer0 length to reasonable amount.
 			if (buffer.size() > MAX_INPUT_SIZE)
 				throw length_error("Exceeded max_input_size");
 
@@ -127,13 +129,13 @@ const bool getNumber(const string prompt, T& n, const T min, const T max) throw(
 					throw out_of_range("Outside min/max");
 			}
 		}
-		catch (const out_of_range) {
+		catch (out_of_range&) {
 			cout << "Number outside range (" << min << " to " << max << ")" << endl;
 		}
-		catch (const length_error) {
+		catch (length_error&) {
 			cout << "Too many characters input" << endl;
 		}
-		catch (const exception) {
+		catch (exception&) {
 			cout << "Invalid input: " << buffer << endl;
 		}
 	}
