@@ -1,4 +1,4 @@
-# C++ Numeric Input Validation
+# C++ Generalized Numeric Input Validation
 
 Integer/float console input validation. Checks console string input for valid characters, and range. Will repeat input prompting for a specified number of attempts. Can be expanded to additional types.
 
