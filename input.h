@@ -41,12 +41,12 @@ static void trim(string& s) {
 
 // Individual type validations.
 template<typename T>
-static inline bool validateNumber(T& t, const string s) {
+static inline const bool validateNumber(T& t, const string s) {
 	return false; // Fail for types other than int, long & double (see below).
 }
 
 template<>
-static inline bool validateNumber<int>(int& i, const string s) {
+static inline const bool validateNumber<int>(int& i, const string s) {
 	string::size_type pos = 0;
 
 	i = stoi(s, &pos);
@@ -57,7 +57,7 @@ static inline bool validateNumber<int>(int& i, const string s) {
 }
 
 template<>
-static inline bool validateNumber<long>(long& l, const string s) {
+static inline const bool validateNumber<long>(long& l, const string s) {
 	string::size_type pos = 0;
 
 	l = stol(s, &pos);
@@ -68,7 +68,7 @@ static inline bool validateNumber<long>(long& l, const string s) {
 }
 
 template<>
-static inline bool validateNumber<double>(double& d, const string s) {
+static inline const bool validateNumber<double>(double& d, const string s) {
 	string::size_type pos = 0;
 
 	d = stod(s, &pos);
@@ -80,7 +80,7 @@ static inline bool validateNumber<double>(double& d, const string s) {
 
 // Validate string characters and attempt conversion.
 template<typename T>
-static bool isNumber(T& n, string& s) {
+static const bool isNumber(T& n, string& s) {
 	trim(s); // Remove trailing ws, leading ws is ignored by stox functions.
 
 	if (!s.empty()) {
@@ -101,7 +101,7 @@ static bool isNumber(T& n, string& s) {
 
 // Input loop.
 template<typename T>
-bool getNumber(string prompt, T& n, T min, T max) throw() {
+const bool getNumber(const string prompt, T& n, const T min, const T max) throw() {
 	assert(!prompt.empty());
 	assert(min >= numeric_limits<T>::lowest() && max <= numeric_limits<T>::max());
 
