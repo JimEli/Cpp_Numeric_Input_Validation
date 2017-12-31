@@ -4,5 +4,5 @@ Integer/float console input validation. Checks console string input for valid ch
 
  Notes:
 * Requires C++ 11 or greater.
-* Compiled with MS Visual Studio 2017 Community (v141).
+* Compiled with MS Visual Studio 2017 Community (v141), and/or Eclipse GCC 5.3.0.
 * Floating point input rejects scientific notation.
