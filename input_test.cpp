@@ -1,5 +1,4 @@
 // Unit tests for input.h routines.
-//#include "stdafx.h"
 #include "input.h"
 
 #ifdef __GNUC__
