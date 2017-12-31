@@ -105,38 +105,36 @@ bool getNumber(string prompt, T& n, T min, T max) throw() {
 	assert(!prompt.empty());
 	assert(min >= numeric_limits<T>::lowest() && max <= numeric_limits<T>::max());
 
-	if (is_same<T, int>::value || is_same<T, long>::value || is_same<T, double>::value) {
-		unsigned int attempts = MAX_INPUT_ATTEMPTS;
+	unsigned int attempts = MAX_INPUT_ATTEMPTS;
 
-		while (attempts--) {
-			string buffer; // Temporary holds input.
+	while (attempts--) {
+		string buffer; // Temporary holds input.
 
-			// Prompt and get input.
-			cout << prompt;
-			getline(cin, buffer, '\n');
+		// Prompt and get input.
+		cout << prompt;
+		getline(cin, buffer, '\n');
 
-			try {
-				// Limit buffer length to reasonable amount.
-				if (buffer.size() > MAX_INPUT_SIZE)
-					throw length_error("Exceeded max_input_size");
+		try {
+			// Limit buffer length to reasonable amount.
+			if (buffer.size() > MAX_INPUT_SIZE)
+				throw length_error("Exceeded max_input_size");
 
-				if (isNumber<T>(n, buffer)) {
-					// Check if value between min/max.
-					if (n >= min && n <= max)
-						return true;
-					else
-						throw out_of_range("Outside min/max");
-				}
+			if (isNumber<T>(n, buffer)) {
+				// Check if value between min/max.
+				if (n >= min && n <= max)
+					return true;
+				else
+					throw out_of_range("Outside min/max");
 			}
-			catch (const out_of_range) {
-				cout << "Number outside range (" << min << " to " << max << ")" << endl;
-			}
-			catch (const length_error) {
-				cout << "Too many characters input" << endl;
-			}
-			catch (const exception) {
-				cout << "Invalid input: " << buffer << endl;
-			}
+		}
+		catch (const out_of_range) {
+			cout << "Number outside range (" << min << " to " << max << ")" << endl;
+		}
+		catch (const length_error) {
+			cout << "Too many characters input" << endl;
+		}
+		catch (const exception) {
+			cout << "Invalid input: " << buffer << endl;
 		}
 	}
 
