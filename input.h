@@ -142,5 +142,4 @@ const bool getNumber(const string prompt, T& n, const T min, const T max) throw(
 
 	return false;
 }
-
 #endif
