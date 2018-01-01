@@ -6,7 +6,7 @@
 *
 * Integer/float console input validation. Checks string input for valid
 * characters, and range. Will repeat input prompting for specified
-* number of attempts. Can be expaned to additional types.
+* number of attempts. Can be expanded to additional types.
 *
 * Notes:
 *  (1) Requires C++ 11 or greater.
@@ -91,9 +91,11 @@ static const bool isNumber(T& n, string& s) {
 			// Add decimal point for floats.
 			validChars += ".";
 
+		// Throw exception if invalid chars found.
 		if (s.find_first_not_of(validChars) != string::npos)
 			throw runtime_error("Invalid characters");
 
+		// Attempt to validate number by type.
 		if (validateNumber<T>(n, s))
 			return true;
 	}
@@ -103,21 +105,22 @@ static const bool isNumber(T& n, string& s) {
 
 // Input loop.
 template<typename T>
-const bool getNumber(const string prompt, T& n, const T min, const T max) throw() {
+const bool getNumber(const string prompt, T& n, const T min, const T max) noexcept {
 	assert(!prompt.empty());
 	assert(min >= numeric_limits<T>::lowest() && max <= numeric_limits<T>::max());
 
 	unsigned int attempts = MAX_INPUT_ATTEMPTS;
 
 	while (attempts--) {
-		string buffer; // Temporary holds input.
+		// Temporary holds input.
+		string buffer;
 
-					   // Prompt and get input.
+		// Prompt and get input.
 		cout << prompt;
 		getline(cin, buffer, '\n');
 
 		try {
-			// Limit buffer0 length to reasonable amount.
+			// Limit buffer length to reasonable amount.
 			if (buffer.size() > MAX_INPUT_SIZE)
 				throw length_error("Exceeded max_input_size");
 
@@ -135,11 +138,12 @@ const bool getNumber(const string prompt, T& n, const T min, const T max) throw(
 		catch (length_error&) {
 			cout << "Too many characters input" << endl;
 		}
-		catch (exception&) {
+		catch (...) {
 			cout << "Invalid input: " << buffer << endl;
 		}
 	}
 
 	return false;
 }
+
 #endif
