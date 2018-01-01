@@ -1,15 +1,5 @@
 // Unit tests for input.h routines.
-#include "input.h"
-
-#ifdef __GNUC__
-#define INVALID_STOD_EXCEPTION "stod"
-#define RANGE_STOL_EXCEPTION "stol"
-#define INVALID_STOL_EXCEPTION "stol"
-#elif _MSC_VER
-#define INVALID_STOD_EXCEPTION "invalid stod argument"
-#define RANGE_STOL_EXCEPTION "stol argument out of range"
-#define INVALID_STOL_EXCEPTION "invalid stol argument"
-#endif
+#include "input.hpp"
 
 int main() {
 	double d;
@@ -81,7 +71,7 @@ int main() {
 		::isNumber<double>(d, s);
 	}
 	catch (exception const& e) {
-		assert(e.what() == string(INVALID_STOD_EXCEPTION));
+		assert(static_cast<string>(e.what()).find("stod") != string::npos);
 	}
 
 	s = "abc"; // invalid, non-numeric
@@ -158,7 +148,7 @@ int main() {
 		::isNumber<long>(l, s);
 	}
 	catch (exception const& e) {
-		assert(e.what() == string(RANGE_STOL_EXCEPTION));
+		assert(static_cast<string>(e.what()).find("stol") != string::npos);
 	}
 
 	s = "-2147483649";
@@ -166,7 +156,7 @@ int main() {
 		::isNumber<long>(l, s);
 	}
 	catch (exception const& e) {
-		assert(e.what() == string(RANGE_STOL_EXCEPTION));
+		assert(static_cast<string>(e.what()).find("stol") != string::npos);
 	}
 
 	s = "-+0";
@@ -174,7 +164,7 @@ int main() {
 		::isNumber<long>(l, s);
 	}
 	catch (exception const& e) {
-		assert(e.what() == string(INVALID_STOL_EXCEPTION));
+		assert(static_cast<string>(e.what()).find("stol") != string::npos);
 	}
 
 	s = "abc";
