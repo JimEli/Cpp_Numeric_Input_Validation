@@ -87,7 +87,7 @@ static const bool isNumber(T& n, string& s) {
 	if (!s.empty()) {
 		string validChars(" +-1234567890");
 
-		if (!std::numeric_limits<T>::is_integer)
+		if (!numeric_limits<T>::is_integer)
 			// Add decimal point for floats.
 			validChars += ".";
 
